@@ -555,13 +555,25 @@
 <!-- Micro-interaction JavaScript -->
 <script>
     function triggerDemoAlert() {
-      var modal = document.getElementById('demo-video-modal');
-      var video = document.getElementById('demo-video-player');
-      modal.classList.remove('hidden');
-      document.body.style.overflow = 'hidden';
-      video.currentTime = 0;
-      video.play().catch(function(){});
-    }
+  var modal = document.getElementById('demo-video-modal');
+  var video = document.getElementById('demo-video-player');
+
+  modal.classList.remove('hidden');
+  document.body.style.overflow = 'hidden';
+
+  video.currentTime = 0;
+
+  function startVideo() {
+    video.play().catch(function() {});
+  }
+
+  if (video.readyState >= 3) {
+    startVideo();
+  } else {
+    video.addEventListener('canplay', startVideo, { once: true });
+    video.load();
+  }
+}
 
     function closeDemoVideo() {
       var modal = document.getElementById('demo-video-modal');
@@ -668,7 +680,7 @@
       Close
     </button>
     <div class="rounded-xl overflow-hidden shadow-2xl bg-black">
-      <video id="demo-video-player" controls playsinline class="w-full h-auto max-h-[80vh] block" preload="none">
+      <video id="demo-video-player" controls playsinline class="w-full h-auto max-h-[80vh] block" preload="auto">
         <source src="./spidey_sense.mp4" type="video/mp4">
         Your browser does not support embedded video.
       </video>
